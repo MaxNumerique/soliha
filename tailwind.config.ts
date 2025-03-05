@@ -14,5 +14,27 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('daisyui'),
+  ],
+  daisyui: {
+    themes: [
+      "light", 
+      "dark", 
+      "emerald",
+      {
+        "soliha-theme": {
+        primary: "#00618a",
+        seconday: "#d7d3c4",
+        accent: "#a1d7e4",
+        neutral: "#3d4451",
+        "base-100": "#1f2937",
+        info: "#a1d7e4",
+        success: "#c8e1bc",
+        warning: "#fef5ad",
+        error: "#ed6f5d",
+        },
+      },
+    ],
+  },
 } satisfies Config;

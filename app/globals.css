@@ -2,20 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* S'assure que la navbar est au-dessus du contenu */
+    background-color: white; /* Ou une autre couleur pour éviter la transparence */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optionnel : une petite ombre */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+main {
+    padding-top: 4rem; /* Ajuste selon la hauteur de ta navbar */
 }

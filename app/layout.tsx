@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-theme="emerald">
       <body className={`${geistSans.variable} ${geistMono.variable} ${openSans.variable} antialiased`}>
         <Navbar />
-        <main className="bg-red" style={{ paddingTop: "var(--navbar-height, 80px)" }}>
+        <main>
           <Suspense fallback={<Loading />}>{children}</Suspense>
         </main>
       </body>

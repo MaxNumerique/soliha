@@ -2,9 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-.navbar {
-    width: 100%;
-    z-index: 1000; /* S'assure que la navbar est au-dessus du contenu */
-    background-color: white; /* Ou une autre couleur pour éviter la transparence */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optionnel : une petite ombre */
-}
+:root {
+    --navbar-height: 80px; /* Ajuste cette valeur si besoin */
+  }
+  
+  nav {
+    height: var(--navbar-height);
+  }
+  
+  main {
+    padding-top: var(--navbar-height);
+  }
+  

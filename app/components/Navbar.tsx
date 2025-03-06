@@ -71,13 +71,6 @@ export default function Navbar() {
     if (!scrollRef.current) {
       scrollRef.current = true;
       requestAnimationFrame(() => {
-        if (window.scrollY > 0) {
-          document.body.style.paddingTop = `${navbarHeight}px`;
-          navbarRef.current.classList.add("sticky");
-        } else {
-          document.body.style.paddingTop = "0";
-          navbarRef.current.classList.remove("sticky");
-        }
         scrollRef.current = false;
       });
     }

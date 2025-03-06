@@ -3,15 +3,8 @@
 @tailwind utilities;
 
 .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
     z-index: 1000; /* S'assure que la navbar est au-dessus du contenu */
     background-color: white; /* Ou une autre couleur pour éviter la transparence */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optionnel : une petite ombre */
-}
-
-main {
-    padding-top: 4rem; /* Ajuste selon la hauteur de ta navbar */
 }

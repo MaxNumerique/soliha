@@ -2,7 +2,7 @@
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center h-screen">
+    <main className="flex flex-col items-center justify-center">
       <header className="mb-8">
         <h1 className="text-3xl font-bold underline">TITRE</h1>
       </header>
@@ -13,4 +13,3 @@ export default function Home() {
     </main>
   );
 }
-

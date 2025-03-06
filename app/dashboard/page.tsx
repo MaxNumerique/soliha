@@ -52,29 +52,34 @@ export default function Dashboard() {
     { name: "Utilisateurs", path: "/dashboard/users", roles: ["Admin"], icon: "👥" },
   ];
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Chargement...</div>;
+  if (loading) return 
+  <div className="flex justify-center items-center h-screen">
+    <span className="loading loading-spinner text-info text-4xl"></span>
+  </div>;
 
   return (
     <div className="flex h-screen">
       {/* Menu vertical */}
-      <nav className="w-64 bg-gray-800 text-white p-4 flex flex-col gap-4">
+      <nav className="w-64 bg-gray-800 text-white p-4 pt-8 flex flex-col gap-4">
         {menuItems.map((item) => {
           const isAccessible = item.roles.length === 0 || hasAccess(item.roles);
 
           return (
             <div key={item.path} className="relative group">
-              <button
-                onClick={() => isAccessible && router.push(item.path)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-left transition 
-                  ${isAccessible ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-900 opacity-50 cursor-not-allowed"}`}
-              >
-                <span>{item.icon}</span> {item.name}
-              </button>
-              {/* Tooltip au hover */}
-              <span className="absolute left-full ml-3 px-2 py-1 text-sm bg-black text-white rounded opacity-0 group-hover:opacity-100 transition">
-                {isAccessible ? `Accéder à ${item.name}` : "Accès interdit"}
-              </span>
-            </div>
+            <button
+              onClick={() => isAccessible && router.push(item.path)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-left transition 
+                ${isAccessible ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-900 opacity-50 cursor-not-allowed"}`}
+            >
+              <span>{item.icon}</span> {item.name}
+            </button>
+          
+            {/* Tooltip qui s'affiche uniquement au hover */}
+            <div
+              className="tooltip absolute left-full ml-3"
+              data-tip={isAccessible ? `Accéder à ${item.name}` : "Accès interdit"}
+            />
+          </div>   
           );
         })}
         {/* Bouton de déconnexion */}

@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link as LinkIcon, Mail as MailIcon } from "lucide-react";
@@ -47,6 +48,7 @@ export default function Navbar() {
   const navbarRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
+  const scrollRef = useRef(false);
 
   useEffect(() => {
     if (navbarRef.current) {
@@ -65,21 +67,28 @@ export default function Navbar() {
     };
   }, []);
 
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current) {
+      scrollRef.current = true;
+      requestAnimationFrame(() => {
+        if (window.scrollY > 0) {
+          document.body.style.paddingTop = `${navbarHeight}px`;
+          navbarRef.current.classList.add("sticky");
+        } else {
+          document.body.style.paddingTop = "0";
+          navbarRef.current.classList.remove("sticky");
+        }
+        scrollRef.current = false;
+      });
+    }
+  }, [navbarHeight]);
+
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 0) {
-        document.body.style.paddingTop = `${navbarHeight}px`;
-        navbarRef.current.classList.add("sticky");
-      } else {
-        document.body.style.paddingTop = "0";
-        navbarRef.current.classList.remove("sticky");
-      }
-    };
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [navbarHeight]);
+  }, [handleScroll]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -185,4 +194,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

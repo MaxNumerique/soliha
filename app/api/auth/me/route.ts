@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { verifyToken } from "../../../utils/token";
+import { verifyToken } from "@utils/token";
 
 export async function GET(req: NextRequest) {
   try {

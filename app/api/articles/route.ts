@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { hasRole } from '@/app/utils/roles';
-import { authenticateUser } from '@/app/utils/auth';
+import { hasRole } from '@utils/roles';
+import { authenticateUser } from '@utils/auth';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();

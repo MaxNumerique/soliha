@@ -22,15 +22,24 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./app/*"],
+      "@components/*": ["./app/components/*"],
+      "@utils/*": ["./app/utils/*"],
+      "@api/*": ["./app/api/*"]
+    }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "next-env.d.ts",
-    ".next/types/**/*.ts"
-, "app/middleware.js"  ],
+    ".next/types/**/*.ts",
+    "app/middleware.js"
+  ],
   "exclude": [
     "node_modules"
   ]
 }
+

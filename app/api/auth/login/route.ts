@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import prisma from '../../../utils/prisma';
-import { setAuthCookie } from "../../../utils/cookies";
-import { generateToken } from "../../../utils/auth";
+import prisma from '@utils/prisma';
+import { setAuthCookie } from "@utils/cookies";
+import { generateToken } from "@utils/auth";
 
 
 export async function POST(request: Request) {

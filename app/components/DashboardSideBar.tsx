@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { MdDashboard, MdArticle, MdCampaign, MdSettings, MdPeople, MdLogout } from "react-icons/md";
 
 export default function DashboardSidebar() {
   const router = useRouter();
@@ -31,11 +32,11 @@ export default function DashboardSidebar() {
   const hasAccess = (roles: string[]) => roles.some((role) => userRoles.includes(role));
 
   const menuItems = [
-    { name: "Tableau de bord", path: "/dashboard", roles: [], icon: "🏠" },
-    { name: "Articles", path: "/dashboard/article", roles: ["Admin", "Admin Article", "Utilisateur spécial"], icon: "📰" },
-    { name: "Annonces", path: "/dashboard/annonce", roles: ["Admin", "Admin Annonce", "Utilisateur spécial"], icon: "📢" },
-    { name: "Gestion du site", path: "/dashboard/site", roles: ["Admin", "Utilisateur spécial"], icon: "⚙️" },
-    { name: "Utilisateurs", path: "/dashboard/users", roles: ["Admin"], icon: "👥" },
+    { name: "Tableau de bord", path: "/dashboard", roles: [], icon: <MdDashboard size={24} /> },
+    { name: "Articles", path: "/dashboard/article", roles: ["Admin", "Admin Article", "Utilisateur spécial"], icon: <MdArticle size={24} /> },
+    { name: "Annonces", path: "/dashboard/annonce", roles: ["Admin", "Admin Annonce", "Utilisateur spécial"], icon: <MdCampaign size={24} /> },
+    { name: "Gestion du site", path: "/dashboard/site", roles: ["Admin", "Utilisateur spécial"], icon: <MdSettings size={24} /> },
+    { name: "Utilisateurs", path: "/dashboard/users", roles: ["Admin"], icon: <MdPeople size={24} /> },
   ];
 
   if (loading)
@@ -46,32 +47,35 @@ export default function DashboardSidebar() {
     );
 
   return (
-    <nav className="fixed top-0 left-0 h-screen w-64 bg-gray-800 text-white p-4 pt-8 flex flex-col gap-4 shadow-lg">
+    <nav className="fixed top-0 left-0 h-screen w-20 bg-gray-800 text-white p-4 pt-24 flex flex-col gap-4 items-center shadow-lg">
       {menuItems.map((item) => {
         const isAccessible = item.roles.length === 0 || hasAccess(item.roles);
 
         return (
-          <button
-            key={item.path}
-            onClick={() => isAccessible && router.push(item.path)}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-left transition ${
-              isAccessible ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-900 opacity-50 cursor-not-allowed"
-            }`}
-          >
-            <span>{item.icon}</span> {item.name}
-          </button>
+          <div key={item.path} className="tooltip tooltip-right" data-tip={item.name}>
+            <button
+              onClick={() => isAccessible && router.push(item.path)}
+              className={`w-10 h-10 flex items-center justify-center rounded-lg transition ${
+                isAccessible ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-900 opacity-50 cursor-not-allowed"
+              }`}
+            >
+              {item.icon}
+            </button>
+          </div>
         );
       })}
-      {/* Bouton de déconnexion */}
+
+      {/* Bouton de déconnexion sans tooltip */}
       <button
         onClick={async () => {
           await fetch("/api/auth/logout", { method: "POST" });
           router.push("/login");
         }}
-        className="w-full flex items-center gap-3 px-4 py-3 rounded-md text-left transition bg-red-700 hover:bg-red-600"
+        className="mt-auto w-10 h-10 flex flex-col items-center text-center gap-1 p-3 rounded-lg bg-red-700 hover:bg-red-600"
       >
-        Se déconnecter
+        <MdLogout size={24} />
       </button>
     </nav>
   );
 }
+

@@ -20,7 +20,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen">
       <DashboardSidebar />
-      <div className="flex-1 p-8 ml-64">
+      <div className="flex-1 p-8 ml-20 md:ml-44">
         <h1 className="text-3xl font-bold">Bienvenue sur le Dashboard</h1>
       </div>
     </div>

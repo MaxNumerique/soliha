@@ -157,7 +157,7 @@ export default function Navbar() {
               <Fragment key={index}>
                 <div className="w-full text-center">
                   <button
-                    className="flex items-center justify-between w-full px-4 py-2 text-3xl font-medium tracking-wide hover:text-gray-500"
+                    className="flex items-center justify-between w-full px-4 py-2 text-xl md:text-3xl font-medium tracking-wide hover:text-gray-500"
                     onClick={() => setOpenMenu(openMenu === index ? null : index)}
                   >
                     {menu.title} <ChevronDown size={30} />
@@ -174,7 +174,7 @@ export default function Navbar() {
                         className="flex flex-col gap-2 items-start text-left w-full pl-5"
                       >
                         {menu.subItems.map((subItem, subIndex) => (
-                          <a key={subIndex} href={`#${subItem.toUpperCase()}`} className="py-2 px-4 hover:text-gray-500 text-3xl">
+                          <a key={subIndex} href={`#${subItem.toUpperCase()}`} className="py-2 px-4 hover:text-gray-500 text-xl md:text-3xl">
                             {subItem}
                           </a>
                         ))}

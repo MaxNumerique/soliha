@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { authenticateUser } from '../../utils/auth';
+import { setAuthCookie } from '../../utils/cookies';
 
 export async function POST(req: Request) {
   try {
@@ -9,15 +10,8 @@ export async function POST(req: Request) {
     // Création de la réponse avec le cookie sécurisé
     const response = NextResponse.json({ message: 'Connexion réussie' });
 
-    response.cookies.set({
-      name: 'token',
-      value: token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 2, // 2h
-      path: '/',
-    });
+    // Création du cookie de session
+    setAuthCookie(response, token);
 
     return response;
   } catch (err: any) {

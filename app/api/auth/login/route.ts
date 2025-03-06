@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../../../utils/prisma';
+import { setAuthCookie } from "../../../utils/cookies";
+import { generateToken } from "../../../utils/auth";
+
 
 export async function POST(request: Request) {
   const { email, password } = await request.json();
@@ -24,27 +27,17 @@ export async function POST(request: Request) {
     }
 
     // Créer un token JWT
-    const token = jwt.sign(
-      { userId: user.id, roles: user.roles.map(role => role.name) },
-      process.env.JWT_SECRET!,
-      { expiresIn: '2h' }
-    );
+    const token = await generateToken(user);
+
 
     // Création de la réponse et enregistrement du cookie
     const response = NextResponse.json({ message: 'Connexion réussie', token });
 
     // Ajout du cookie
-    response.cookies.set({
-      name: 'token',
-      value: token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 2, // 2h
-      path: '/',
-    });
+    setAuthCookie(response, token);
+    
+    return response;
 
-    return response; // On retourne cette réponse, pas une nouvelle
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 });

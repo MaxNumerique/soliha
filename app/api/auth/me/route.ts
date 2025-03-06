@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import { verifyToken } from "../../../utils/token";
 
 export async function GET(req: NextRequest) {
   try {
@@ -10,12 +10,16 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      return NextResponse.json({ error: "Token invalide" }, { status: 403 });
+    }
+
     console.log("✅ Token valide, rôles :", decoded.roles);
 
     return NextResponse.json({ roles: decoded.roles });
   } catch (error) {
-    console.error("⚠️ Token invalide :", error);
-    return NextResponse.json({ error: "Token invalide" }, { status: 403 });
+    console.error("❌ Erreur serveur dans /api/auth/me :", error);
+    return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 });
   }
 }

@@ -116,29 +116,33 @@ export default function Navbar() {
 
       {/* Logo centré */}
       <div className="absolute left-1/2 transform -translate-x-1/2 max-w-full overflow-hidden">
-        <div className="text-xl font-bold">
+        <div className="text-xl font-bold md:h-16">
           <a href="/">
-            <img src="/logos/mainLogo.png" alt="Logo SOLIHA" className="max-w-full max-h-16" />
+            <img src="/logos/mainLogo.png" alt="Logo SOLIHA" className="max-w-full md:h-16 h-12" />
           </a>
         </div>
       </div>
 
       {/* Boutons (à droite) */}
-      <div className="ml-auto flex gap-4">
+      <div className="ml-auto flex md:gap-4 gap-1 ">
         <a
           href="https://portail.pyrenees.pactbearn.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition whitespace-nowrap"
+          className="flex items-center gap-1 md:gap-2 px-2 py-2 md:px-4 md:py-2 text-xs md:text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition whitespace-nowrap"
         >
-          <LinkIcon size={20} /> Accéder au portail SOLIHA
+          <LinkIcon size={16} className="md:hidden" />
+          <LinkIcon size={20} className="hidden md:inline" />
+          <span className="hidden md:inline">Accéder au portail SOLIHA</span>
         </a>
 
         <a
           href="mailto:contact@soliha.fr"
-          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition whitespace-nowrap"
+          className="flex items-center gap-1 md:gap-2 px-2 py-2 md:px-4 md:py-2 text-xs md:text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition whitespace-nowrap"
         >
-          <MailIcon size={20} /> Contacter SOLIHA
+          <MailIcon size={16} className="md:hidden" />
+          <MailIcon size={20} className="hidden md:inline" />
+          <span className="hidden md:inline">Contacter SOLIHA</span>
         </a>
       </div>
 

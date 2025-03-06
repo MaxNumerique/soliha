@@ -75,28 +75,3 @@ export async function GET(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
-  try {
-    const { id } = await request.json();
-
-    // Vérifier si l'utilisateur existe
-    const existingUser = await prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (!existingUser) {
-      return NextResponse.json({ error: 'Cet utilisateur n\'existe pas' }, { status: 404 });
-    }
-
-    // Supprimer l'utilisateur
-    await prisma.user.delete({
-      where: { id },
-    });
-
-    return NextResponse.json({ message: 'L\'utilisateur a été supprimé avec succès' }, { status: 200 });
-
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 });
-  }
-}

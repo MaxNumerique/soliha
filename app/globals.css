@@ -3,14 +3,18 @@
 @tailwind utilities;
 
 :root {
-    --navbar-height: 80px; /* Ajuste cette valeur si besoin */
-  }
+    --navbar-height: 80px; 
+    --text-sm: 12px;
+    --margesDashboard: p-8 ml-20 md:ml-34;
+}
   
-  nav {
-    height: var(--navbar-height);
-  }
-  
-  main {
-    padding-top: var(--navbar-height);
-  }
-  
+body {
+  font-size: var(--text-sm);
+}
+nav {
+  height: var(--navbar-height);
+}
+
+main {
+  padding-top: var(--navbar-height);
+}

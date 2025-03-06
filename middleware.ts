@@ -39,7 +39,6 @@ export async function middleware(req: NextRequest) {
   }
 }
 
-
 // Configuration des routes protégées
 export const config = {
   matcher: ["/dashboard/:path*", "/admin/:path*"],

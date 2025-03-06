@@ -98,7 +98,7 @@ export default function Navbar() {
   return (
     <nav
       ref={navbarRef}
-      className="fixed top-0 left-0 w-full p-6 flex items-center bg-white z-50 shadow-md"
+      className="fixed top-0 left-0 w-full p-6 flex items-center bg-white z-50 shadow-md z-1000"
     >
       {/* Menu Burger (à gauche) */}
       <div className="flex items-center">
@@ -122,7 +122,7 @@ export default function Navbar() {
           href="https://portail.pyrenees.pactbearn.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 md:gap-2 px-2 py-2 md:px-4 md:py-2 text-xs md:text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition whitespace-nowrap"
+          className="flex items-center gap-1 md:gap-2 px-2 py-1 md:px-3 md:py-1 text-var(--text-sm) font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition whitespace-nowrap"
         >
           <LinkIcon size={16} className="md:hidden" />
           <LinkIcon size={20} className="hidden md:inline" />
@@ -131,7 +131,7 @@ export default function Navbar() {
 
         <a
           href="mailto:contact@soliha.fr"
-          className="flex items-center gap-1 md:gap-2 px-2 py-2 md:px-4 md:py-2 text-xs md:text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition whitespace-nowrap"
+          className="flex items-center gap-1 md:gap-2 px-2 py-2 md:px-3 md:py-2 text-2xs text-var(--text-sm) font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition whitespace-nowrap"
         >
           <MailIcon size={16} className="md:hidden" />
           <MailIcon size={20} className="hidden md:inline" />

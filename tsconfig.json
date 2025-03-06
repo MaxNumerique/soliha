@@ -28,7 +28,8 @@
       "@/*": ["./app/*"],
       "@components/*": ["./app/components/*"],
       "@utils/*": ["./app/utils/*"],
-      "@api/*": ["./app/api/*"]
+      "@api/*": ["./app/api/*"],
+      "@hooks/*": ["./app/hooks/*"],
     }
   },
   "include": [

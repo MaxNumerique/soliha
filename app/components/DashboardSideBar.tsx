@@ -47,7 +47,7 @@ export default function DashboardSidebar() {
     );
 
   return (
-    <nav className="fixed top-0 left-0 h-screen w-20 bg-gray-800 text-white p-4 pt-24 flex flex-col gap-4 items-center shadow-lg">
+    <nav className="fixed top-0 left-0 h-screen w-20 bg-gray-800 text-white p-4 pt-24 flex flex-col gap-4 items-center shadow-lg z-100">
       {menuItems.map((item) => {
         const isAccessible = item.roles.length === 0 || hasAccess(item.roles);
 
@@ -56,7 +56,7 @@ export default function DashboardSidebar() {
             <button
               onClick={() => isAccessible && router.push(item.path)}
               className={`w-10 h-10 flex items-center justify-center rounded-lg transition ${
-                isAccessible ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-900 opacity-50 cursor-not-allowed"
+                isAccessible ? "z10 bg-gray-700 hover:bg-gray-600" : "bg-gray-900 opacity-50 cursor-not-allowed"
               }`}
             >
               {item.icon}

@@ -74,5 +74,21 @@ export function useUsers() {
     setTimeout(() => setNotification(''), 3000);
   };
 
-  return { users, roles, notification, addUser, editUser, deleteUser };
+  const handleResetPassword = async (email) => {
+    const response = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+
+    if (response.ok) {
+      setNotification('Email de réinitialisation envoyé !');
+    } else {
+      const data = await response.json();
+      setNotification(data.error || 'Erreur lors de l\'envoi de l\'email');
+    }
+    setTimeout(() => setNotification(''), 3000);
+  };
+
+  return { users, roles, notification, addUser, editUser, deleteUser, handleResetPassword };
 }

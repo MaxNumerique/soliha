@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useUsers } from '@/hooks/useUsers';
 import DashboardLayout from '@/components/DashboardLayout';
-import { MdEdit, MdDelete } from 'react-icons/md';
+import { MdEdit, MdDelete, MdMail } from 'react-icons/md';
 
 export default function AdminPage() {
-  const { users, roles, notification, addUser, editUser, deleteUser } = useUsers();
+  const { users, roles, notification, addUser, editUser, deleteUser, handleResetPassword } = useUsers();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -51,6 +51,9 @@ export default function AdminPage() {
                 </button>
                 <button onClick={() => { setSelectedUser(user.id); setIsDeleteModalOpen(true); }} className="btn btn-sm btn-ghost">
                   <MdDelete className="text-xl text-red-500" />
+                </button>
+                <button onClick={() => handleResetPassword(user.email)} className="btn btn-sm btn-ghost">
+                  <MdMail className="text-xl text-green-500" />
                 </button>
               </td>
             </tr>

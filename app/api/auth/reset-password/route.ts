@@ -1,35 +1,36 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import jwt from 'jsonwebtoken';
-import { sendResetEmail } from '@/utils/mailer';
+import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import prisma from "@utils/prisma";
 
-const prisma = new PrismaClient();
+const JWT_SECRET = process.env.JWT_SECRET || "SECRET";
 
 export async function POST(request: Request) {
   try {
-    const { email } = await request.json();
+    const { token, password } = await request.json();
 
-    // Vérifier si l'utilisateur existe
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    console.log("🔍 Token reçu dans l'API :", token); // DEBUG
 
-    if (!user) {
-      return NextResponse.json({ error: "Utilisateur non trouvé" }, { status: 404 });
+    if (!token) {
+      return NextResponse.json({ error: "Aucun token fourni" }, { status: 400 });
     }
 
-    // Générer un token de réinitialisation
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // Vérifier et décoder le token
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
+    
+    console.log("✅ Token décodé :", decoded);
 
-    // Lien de réinitialisation
-    const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Envoyer l'email
-    await sendResetEmail(email, resetLink);
+    await prisma.user.update({
+      where: { id: decoded.userId },
+      data: { password: hashedPassword },
+    });
 
-    return NextResponse.json({ message: "Email de réinitialisation envoyé" });
+    return NextResponse.json({ message: "Mot de passe mis à jour avec succès" });
+
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email de réinitialisation:", error);
-    return NextResponse.json({ error: "Erreur lors de l'envoi de l'email de réinitialisation" }, { status: 500 });
+    console.error("❌ Erreur lors de la réinitialisation :", error);
+    return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 });
   }
 }

@@ -17,3 +17,9 @@ export function verifyToken(token: string): JwtPayload | null {
     return null;
   }
 }
+
+export function generateResetToken(userId: number) {
+  const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: "24h" });
+  console.log("🔑 Token généré :", token); // DEBUG
+  return token;
+}

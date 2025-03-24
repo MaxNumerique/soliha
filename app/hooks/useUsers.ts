@@ -77,20 +77,10 @@ export function useUsers() {
   const handleResetPassword = async (email) => {
     console.log("📩 Envoi de la requête pour reset password de :", email);
   
-    // Récupère le token dans le localStorage ou cookie (si tu as utilisé ce type de stockage)
-    const token = localStorage.getItem("authToken");  // OU récupère-le depuis un cookie si tu l'as stocké là
-  
-    if (!token) {
-      console.error("❌ Aucun token trouvé dans le stockage.");
-      return; // Si pas de token, on arrête la requête
-    }
-  
-    // Envoie la requête avec le token dans l'en-tête Authorization
     const response = await fetch('/api/auth/reset-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Ajout du token dans l'en-tête
       },
       body: JSON.stringify({ email }),
     });
@@ -107,6 +97,7 @@ export function useUsers() {
   
     setTimeout(() => setNotification(''), 3000);
   };
+  
   
   
 

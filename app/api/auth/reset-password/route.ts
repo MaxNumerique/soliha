@@ -1,27 +1,26 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import prisma from "@utils/prisma";
-
-const JWT_SECRET = process.env.JWT_SECRET || "SECRET";
+import { verifyToken } from "@utils/token";
 
 export async function POST(request: Request) {
   try {
-    const { token, password } = await request.json();
+    const { token, password } = await request.json(); // ✅ Récupérer le token et le password
 
-    console.log("🔍 Token reçu dans l'API :", token); // DEBUG
-
-    if (!token) {
-      return NextResponse.json({ error: "Aucun token fourni" }, { status: 400 });
+    if (!token || !password) {
+      return NextResponse.json({ error: "Token et mot de passe requis" }, { status: 400 });
     }
 
-    // Vérifier et décoder le token
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
-    
-    console.log("✅ Token décodé :", decoded);
+    // Vérifier le token
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      return NextResponse.json({ error: "Token invalide ou expiré" }, { status: 400 });
+    }
 
+    // Hasher le nouveau mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Mettre à jour l'utilisateur en base de données
     await prisma.user.update({
       where: { id: decoded.userId },
       data: { password: hashedPassword },
@@ -30,7 +29,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Mot de passe mis à jour avec succès" });
 
   } catch (error) {
-    console.error("❌ Erreur lors de la réinitialisation :", error);
+    console.error("❌ Erreur lors de la mise à jour du mot de passe :", error);
     return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 });
   }
 }

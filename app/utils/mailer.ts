@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 
 export async function sendPasswordResetEmail(email: string, token: string) {
-  const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
   console.log("📩 Email envoyé à :", email);
   console.log("🔗 Lien généré pour la réinitialisation :", resetLink);
@@ -28,10 +28,17 @@ export async function sendPasswordResetEmail(email: string, token: string) {
     to: email,
     subject: "Initialisation de votre mot de passe",
     html: `
-      <p>Bonjour,</p>
+      <p style="margin-top: 30px;">Bonjour,</p>
       <p>Veuillez cliquer sur le lien ci-dessous pour définir votre mot de passe :</p>
-      <a href="${resetLink}">${resetLink}</a>
-      <p>Ce lien expire dans 24 heures.</p>
+      <p style="margin-top: 20px; margin-bottom: 20px;">
+        <a
+          href="${resetLink}"
+          style="background-color: #4CAF50; color: white; padding: 15px 30px; border-radius: 5px; text-decoration: none; display: inline-block;"
+        >
+          Réinitialiser mon mot de passe
+        </a>
+      </p>
+      <p style="margin-bottom: 30px;">Ce lien expire dans 24 heures.</p>
     `,
   };
 

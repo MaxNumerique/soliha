@@ -1,0 +1,54 @@
+/* Styles personnalisés pour Swiper */
+
+/* Navigation buttons */
+.swiper-button-next,
+.swiper-button-prev {
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 20px;
+}
+
+/* Pagination dots */
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+  background: white;
+}
+
+/* Styles spécifiques pour la section actualités */
+.bg-gray-50 .swiper-button-next,
+.bg-gray-50 .swiper-button-prev {
+  color: #1e40af; /* blue-600 */
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.bg-gray-50 .swiper-button-next:hover,
+.bg-gray-50 .swiper-button-prev:hover {
+  background: white;
+}
+
+.bg-gray-50 .swiper-pagination-bullet {
+  background: rgba(30, 64, 175, 0.3); /* blue-600 avec opacité */
+}
+
+.bg-gray-50 .swiper-pagination-bullet-active {
+  background: #1e40af; /* blue-600 */
+}

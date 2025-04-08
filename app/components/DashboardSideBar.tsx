@@ -32,7 +32,7 @@ export default function DashboardSidebar() {
 
   const menuItems = [
     { name: "Tableau de bord", path: "/dashboard", roles: [], icon: <MdDashboard size={24} /> },
-    { name: "Articles", path: "/dashboard/article", roles: ["Admin", "Admin Article", "Utilisateur spécial"], icon: <MdArticle size={24} /> },
+    { name: "Articles", path: "/dashboard/articles", roles: ["Admin", "Admin Article", "Utilisateur spécial"], icon: <MdArticle size={24} /> },
     { name: "Annonces", path: "/dashboard/annonce", roles: ["Admin", "Admin Annonce", "Utilisateur spécial"], icon: <MdCampaign size={24} /> },
     { name: "Gestion du site", path: "/dashboard/site", roles: ["Admin", "Utilisateur spécial"], icon: <MdSettings size={24} /> },
     { name: "Utilisateurs", path: "/dashboard/users", roles: ["Admin"], icon: <MdPeople size={24} /> },

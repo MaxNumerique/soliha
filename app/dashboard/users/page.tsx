@@ -23,7 +23,7 @@ export default function AdminPage() {
       )}
 
       {/* Bouton Ajouter */}
-      <button className="btn btn-primary mb-4" onClick={() => setIsModalOpen(true)}>
+      <button className="btn btn-primary btn-sm p-2" onClick={() => setIsModalOpen(true)}>
         Ajouter
       </button>
 
@@ -44,7 +44,7 @@ export default function AdminPage() {
               <td>{user.id}</td>
               <td>{user.name}</td>
               <td>{user.email}</td>
-              <td>{user.roles?.map((role) => role.name).join(', ')}</td>
+              <td>{user.roles?.map(role => role.name).join(', ') || 'Aucun rôle'}</td>
               <td className="flex gap-2">
                 <button onClick={() => { setSelectedUser(user); setIsEditModalOpen(true); }} className="btn btn-sm btn-ghost">
                   <MdEdit className="text-xl text-blue-500" />
@@ -92,10 +92,10 @@ export default function AdminPage() {
         <Modal title="Supprimer l'utilisateur" onClose={() => setIsDeleteModalOpen(false)}>
           <p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
           <div className="flex justify-end gap-2 mt-4">
-            <button className="btn btn-ghost" onClick={() => setIsDeleteModalOpen(false)}>
+            <button className="btn btn-sm btn-ghost" onClick={() => setIsDeleteModalOpen(false)}>
               Annuler
             </button>
-            <button className="btn btn-error" onClick={() => deleteUser(selectedUser, () => setIsDeleteModalOpen(false))}>
+            <button className="btn btn-sm btn-error" onClick={() => deleteUser(selectedUser, () => setIsDeleteModalOpen(false))}>
               Supprimer
             </button>
           </div>
@@ -116,25 +116,25 @@ const Modal = ({ title, children, onClose }) => (
 
 const UserForm = ({ user, roles, onSubmit, onChange, onClose }) => (
   <form onSubmit={(e) => { e.preventDefault(); onSubmit(user); }}>
-    <div className="mb-4">
-      <label className="block text-sm font-medium">Nom</label>
-      <input type="text" className="input input-bordered w-full" value={user.name} onChange={(e) => onChange({ ...user, name: e.target.value })} required />
+    <div className="mb-3">
+      <label className="block text-sm font-small mb-1">Nom</label>
+      <input type="text" className="input input-bordered w-full input-sm" value={user.name} onChange={(e) => onChange({ ...user, name: e.target.value })} required />
     </div>
-    <div className="mb-4">
-      <label className="block text-sm font-medium">Email</label>
-      <input type="email" className="input input-bordered w-full" value={user.email} onChange={(e) => onChange({ ...user, email: e.target.value })} required />
+    <div className="mb-3">
+      <label className="block text-sm font-small mb-1">Email</label>
+      <input type="email" className="input input-bordered w-full input-sm" value={user.email} onChange={(e) => onChange({ ...user, email: e.target.value })} required />
     </div>
-    <div className="mb-4">
-      <label className="block text-sm font-medium">Rôle</label>
-      <select className="select select-bordered w-full" value={user.role} onChange={(e) => onChange({ ...user, role: e.target.value })} required>
+    <div className="mb-3">
+      <label className="block text-sm font-small mb-1">Rôle</label>
+      <select className="select select-bordered w-full select-sm" value={user.role} onChange={(e) => onChange({ ...user, role: e.target.value })} required>
         {roles.map((role) => <option key={role.id} value={role.name}>{role.name}</option>)}
       </select>
     </div>
-    <div className="flex justify-between mt-4">
-      <button type="button" className="btn btn-ghost" onClick={onClose} >
+    <div className="flex justify-between mt-6">
+      <button type="button" className="btn btn-sm btn-ghost" onClick={onClose} >
         Annuler
       </button>
-      <button type="submit" className="btn btn-primary" >
+      <button type="submit" className="btn btn-sm btn-primary" >
         Valider
       </button>
     </div>

@@ -25,7 +25,6 @@ export default function DashboardSidebar() {
         setLoading(false);
       }
     };
-
     fetchUserRoles();
   }, []);
 
@@ -78,4 +77,3 @@ export default function DashboardSidebar() {
     </nav>
   );
 }
-

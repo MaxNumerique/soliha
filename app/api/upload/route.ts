@@ -48,7 +48,8 @@ export async function POST(request: NextRequest) {
           } else {
             resolve(
               NextResponse.json({ 
-                url: result?.secure_url 
+                url: result?.secure_url,
+                public_id: result?.public_id
               })
             );
           }

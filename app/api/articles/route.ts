@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 
@@ -73,23 +73,35 @@ export async function POST(req: NextRequest) {
 
     // Validate images
     const validImages = images 
-      ? images.filter((img: any) => img && typeof img.url === 'string')
+      ? images.filter((img: any) => img && (typeof img === 'string' || (typeof img === 'object' && img.url)))
       : [];
 
+    // Ensure user exists
+    const user = await prisma.user.findUnique({
+      where: { id: decodedToken.userId }
+    });
+
+    if (!user) {
+      console.error('User not found', { userId: decodedToken.userId });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Create article with optional images
     const article = await prisma.article.create({
-      include: {
-        images: true
-      },
       data: {
         title,
         body,
+        authorId: user.id,
         images: validImages.length > 0 ? {
           create: validImages.map((img: any, index: number) => ({
-            url: img.url || img,  // Handle both { url: '...' } and direct string
+            url: typeof img === 'string' ? img : img.url,
+            cloudinaryPublicId: typeof img === 'object' ? img.publicId : null,
             order: index
           }))
-        } : undefined,
-        authorId: decodedToken.userId
+        } : undefined
+      },
+      include: {
+        images: true
       }
     });
 
@@ -98,6 +110,34 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(article);
   } catch (error) {
     console.error('Detailed error during article creation:', error);
+
+    // Prisma specific error handling
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // Unique constraint violation
+      if (error.code === 'P2002') {
+        return NextResponse.json({ 
+          error: 'Unique constraint violation', 
+          details: error.message 
+        }, { status: 400 });
+      }
+      
+      // Foreign key constraint violation
+      if (error.code === 'P2003') {
+        return NextResponse.json({ 
+          error: 'Related record not found', 
+          details: error.message 
+        }, { status: 400 });
+      }
+
+      // Column does not exist
+      if (error.code === 'P2022') {
+        return NextResponse.json({ 
+          error: 'Database schema mismatch', 
+          details: error.message 
+        }, { status: 500 });
+      }
+    }
+
     return NextResponse.json({ 
       error: error instanceof Error 
         ? error.message 

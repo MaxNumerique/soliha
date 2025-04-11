@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 
@@ -30,6 +30,26 @@ export async function PUT(
     }
 
     const { title, body, images } = await req.json();
+
+    // Validate input
+    if (!title || !body) {
+      return NextResponse.json({ error: 'Title and body are required' }, { status: 400 });
+    }
+
+    // Validate images
+    if (images && !Array.isArray(images)) {
+      return NextResponse.json({ error: 'Images must be an array' }, { status: 400 });
+    }
+
+    // Ensure article exists
+    const existingArticle = await prisma.article.findUnique({
+      where: { id: Number(params.id) }
+    });
+
+    if (!existingArticle) {
+      return NextResponse.json({ error: 'Article not found' }, { status: 404 });
+    }
+    
     // Supprimer toutes les images existantes
     await prisma.articleImage.deleteMany({
       where: {
@@ -37,27 +57,72 @@ export async function PUT(
       }
     });
 
+    // Prepare images data
+    const imagesData = images && images.length > 0 
+      ? images.map((image: { url: string, publicId?: string }, index: number) => {
+          // Validate each image object
+          if (!image || !image.url) {
+            throw new Error(`Invalid image at index ${index}: missing URL`);
+          }
+          
+          return {
+            url: image.url,
+            cloudinaryPublicId: image.publicId || null,
+            order: index
+          };
+        })
+      : undefined;
+
     // Mettre à jour l'article avec les nouvelles images
     const article = await prisma.article.update({
       where: { id: Number(params.id) },
       data: {
         title,
         body,
-        images: {
-          create: images.map((url: string, index: number) => ({
-            url,
-            order: index
-          }))
-        },
+        images: imagesData ? { create: imagesData } : undefined,
         updatedAt: new Date(),
       },
+      include: {
+        images: true
+      }
     });
 
     return NextResponse.json(article);
   } catch (error) {
+    console.error('Article update error:', error);
+    
+    // More detailed error handling
     if (error instanceof jwt.JsonWebTokenError) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
+
+    // Prisma specific error handling
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // Unique constraint violation
+      if (error.code === 'P2002') {
+        return NextResponse.json({ 
+          error: 'Unique constraint violation', 
+          details: error.message 
+        }, { status: 400 });
+      }
+      
+      // Foreign key constraint violation
+      if (error.code === 'P2003') {
+        return NextResponse.json({ 
+          error: 'Related record not found', 
+          details: error.message 
+        }, { status: 400 });
+      }
+    }
+
+    // Generic error handling
+    if (error instanceof Error) {
+      return NextResponse.json({ 
+        error: 'Internal Server Error', 
+        details: error.message 
+      }, { status: 500 });
+    }
+
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

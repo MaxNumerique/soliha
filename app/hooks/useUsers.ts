@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { successNotification, errorNotification } from '../components/Notification';
 
 export function useUsers() {
   const [users, setUsers] = useState([]);
@@ -11,95 +13,125 @@ export function useUsers() {
   }, []);
 
   const fetchUsers = async () => {
-    const response = await fetch('/api/admin/users');
-    if (response.ok) {
+    try {
+      const response = await fetch('/api/admin/users');
+      if (!response.ok) {
+        throw new Error('Erreur lors du chargement des utilisateurs');
+      }
       const data = await response.json();
       setUsers(data.users);
+    } catch (error) {
+      toast.error(error.message, errorNotification(error.message));
     }
   };
 
   const fetchRoles = async () => {
-    const response = await fetch('/api/admin/roles');
-    if (response.ok) {
+    try {
+      const response = await fetch('/api/admin/roles');
+      if (!response.ok) {
+        throw new Error('Erreur lors du chargement des rôles');
+      }
       const data = await response.json();
       setRoles(data.roles);
+    } catch (error) {
+      toast.error(error.message, errorNotification(error.message));
     }
   };
 
   const addUser = async (newUser, callback) => {
-    const response = await fetch('/api/admin/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newUser),
-    });
+    try {
+      const response = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser),
+      });
 
-    if (response.ok) {
-      setNotification('Utilisateur ajouté avec succès !');
-      fetchUsers();
-      callback(); // Fermer la modale
-    } else {
       const data = await response.json();
-      setNotification(data.error || 'Erreur lors de l\'ajout');
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de l\'ajout de l\'utilisateur');
+      }
+
+      toast.success('Utilisateur ajouté avec succès !', successNotification('Utilisateur ajouté avec succès !'));
+      await fetchUsers();
+      callback?.();
+    } catch (error) {
+      toast.error(error.message, errorNotification(error.message || 'Erreur lors de l\'ajout de l\'utilisateur'));
     }
-    setTimeout(() => setNotification(''), 3000);
   };
 
   const editUser = async (updatedUser, callback) => {
-    const response = await fetch(`/api/admin/users/${updatedUser.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedUser),
-    });
+    try {
+      const response = await fetch(`/api/admin/users/${updatedUser.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedUser),
+      });
 
-    if (response.ok) {
-      setNotification('Utilisateur modifié avec succès !');
-      fetchUsers();
-      callback();
-    } else {
-      setNotification('Erreur lors de la modification');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de la modification de l\'utilisateur');
+      }
+
+      toast.success('Utilisateur modifié avec succès !', successNotification('Utilisateur modifié avec succès !'));
+      await fetchUsers();
+      callback?.();
+    } catch (error) {
+      toast.error(error.message, errorNotification(error.message || 'Erreur lors de la modification de l\'utilisateur'));
     }
-    setTimeout(() => setNotification(''), 3000);
   };
 
   const deleteUser = async (userId, callback) => {
-    const response = await fetch(`/api/admin/users/${userId}`, { method: 'DELETE' });
+    try {
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: 'DELETE',
+      });
 
-    if (response.ok) {
-      setNotification('Utilisateur supprimé avec succès !');
-      fetchUsers();
-      callback();
-    } else {
-      setNotification('Erreur lors de la suppression');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de la suppression de l\'utilisateur');
+      }
+
+      toast.success('Utilisateur supprimé avec succès !', successNotification('Utilisateur supprimé avec succès !'));
+      await fetchUsers();
+      callback?.();
+    } catch (error) {
+      toast.error(error.message, errorNotification(error.message || 'Erreur lors de la suppression de l\'utilisateur'));
     }
-    setTimeout(() => setNotification(''), 3000);
   };
 
-  const handleResetPassword = async (email) => {
-    console.log("📩 Envoi de la requête pour reset password de :", email);
-  
-    const response = await fetch('/api/auth/reset-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email }),
-    });
-  
-    console.log("📡 Réponse brute :", response);
-    const data = await response.json();
-    console.log("📡 Données reçues :", data);
-  
-    if (response.ok) {
-      setNotification('Email de réinitialisation envoyé !');
-    } else {
-      setNotification(data.error || 'Erreur lors de l\'envoi de l\'email');
-    }
-  
-    setTimeout(() => setNotification(''), 3000);
-  };
-  
-  
-  
+  const handleResetPassword = async (email, callback) => {
+    try {
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
 
-  return { users, roles, notification, addUser, editUser, deleteUser, handleResetPassword };
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de l\'envoi de l\'email');
+      }
+
+      toast.success('Email de réinitialisation envoyé !', successNotification('Email de réinitialisation envoyé !'));
+      callback?.();
+    } catch (error) {
+      toast.error(error.message, errorNotification(error.message || 'Erreur lors de l\'envoi de l\'email'));
+    }
+  };
+
+  return {
+    users,
+    roles,
+    notification,
+    fetchUsers,
+    fetchRoles,
+    addUser,
+    editUser,
+    deleteUser,
+    handleResetPassword,
+  };
 }

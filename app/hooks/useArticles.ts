@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import { successNotification, errorNotification } from '../components/Notification';
 
 export function useArticles() {
   const [articles, setArticles] = useState([]);
@@ -17,14 +18,7 @@ export function useArticles() {
       const data = await response.json();
       setArticles(data);
     } catch (error) {
-      toast.error('Erreur lors du chargement des articles', {
-        duration: 3000,
-        position: 'bottom-right',
-        style: {
-          background: '#F9F9F9',
-          color: 'black',
-        },
-      });
+      toast.error(error.message, errorNotification(error.message));
     }
   };
 
@@ -37,28 +31,15 @@ export function useArticles() {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la création de l\'article');
+        const data = await response.json();
+        throw new Error(data.error || 'Erreur lors de la création de l\'article');
       }
 
-      toast.success('Article créé avec succès !', {
-        duration: 3000,
-        position: 'bottom-right',
-        style: {
-          background: '#F9F9F9',
-          color: 'black',
-        },
-      });
+      toast.success('Article créé avec succès !', successNotification('Article créé avec succès !'));
       await fetchArticles();
       callback?.();
     } catch (error) {
-      toast.error('Erreur lors de la création de l\'article', {
-        duration: 3000,
-        position: 'bottom-right',
-        style: {
-          background: '#F9F9F9',
-          color: 'black',
-        },
-      });
+      toast.error(error.message, errorNotification(error.message || 'Erreur lors de la création de l\'article'));
     }
   };
 
@@ -71,28 +52,15 @@ export function useArticles() {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la modification de l\'article');
+        const data = await response.json();
+        throw new Error(data.error || 'Erreur lors de la modification de l\'article');
       }
 
-      toast.success('Article modifié avec succès !', {
-        duration: 3000,
-        position: 'bottom-right',
-        style: {
-          background: '#F9F9F9',
-          color: 'black',
-        },
-      });
+      toast.success('Article modifié avec succès !', successNotification('Article modifié avec succès !'));
       await fetchArticles();
       callback?.();
     } catch (error) {
-      toast.error('Erreur lors de la modification de l\'article', {
-        duration: 3000,
-        position: 'bottom-right',
-        style: {
-          background: '#F9F9F9',
-          color: 'black',
-        },
-      });
+      toast.error(error.message, errorNotification(error.message || 'Erreur lors de la modification de l\'article'));
     }
   };
 
@@ -103,28 +71,15 @@ export function useArticles() {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la suppression de l\'article');
+        const data = await response.json();
+        throw new Error(data.error || 'Erreur lors de la suppression de l\'article');
       }
 
-      toast.success('Article supprimé avec succès !', {
-        duration: 3000,
-        position: 'bottom-right',
-        style: {
-          background: '#F9F9F9  ',
-          color: 'black',
-        },
-      });
+      toast.success('Article supprimé avec succès !', successNotification('Article supprimé avec succès !'));
       await fetchArticles();
       callback?.();
     } catch (error) {
-      toast.error('Erreur lors de la suppression de l\'article', {
-        duration: 3000,
-        position: 'bottom-right',
-        style: {
-          background: '#F9F9F9',
-          color: 'black',
-        },
-      });
+      toast.error(error.message, errorNotification(error.message || 'Erreur lors de la suppression de l\'article'));
     }
   };
 

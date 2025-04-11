@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useUsers } from '@/hooks/useUsers';
 import DashboardLayout from '@/components/DashboardLayout';
 import { MdEdit, MdDelete, MdMail } from 'react-icons/md';
+import FormInput from '@/components/FormInput';
+import ConfirmModal from '@/components/ConfirmModal';
 
 export default function AdminPage() {
   const { users, roles, notification, addUser, editUser, deleteUser, handleResetPassword } = useUsers();
@@ -23,7 +25,7 @@ export default function AdminPage() {
       )}
 
       {/* Bouton Ajouter */}
-      <button className="btn btn-primary btn-sm p-2" onClick={() => setIsModalOpen(true)}>
+      <button className="btn btn-primary btn-sm p-2 mb-4" onClick={() => setIsModalOpen(true)}>
         Ajouter
       </button>
 
@@ -62,21 +64,27 @@ export default function AdminPage() {
       </table>
 
       {/* Modale Ajouter */}
-      {isModalOpen && (
-        <Modal title="Ajouter un utilisateur" onClose={() => setIsModalOpen(false)}>
-          <UserForm
-            user={newUser}
-            roles={roles}
-            onSubmit={(data) => addUser(data, () => setIsModalOpen(false))}
-            onChange={setNewUser}
-            onClose={() => setIsModalOpen(false)}
-          />
-        </Modal>
-      )}
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        title="Ajouter un utilisateur"
+      >
+        <UserForm
+          user={newUser}
+          roles={roles}
+          onSubmit={(data) => addUser(data, () => setIsModalOpen(false))}
+          onChange={setNewUser}
+          onClose={() => setIsModalOpen(false)}
+        />
+      </Modal>
 
       {/* Modale Modifier */}
-      {isEditModalOpen && selectedUser && (
-        <Modal title="Modifier l'utilisateur" onClose={() => setIsEditModalOpen(false)}>
+      {selectedUser && (
+        <Modal 
+          isOpen={isEditModalOpen} 
+          onClose={() => setIsEditModalOpen(false)} 
+          title="Modifier l'utilisateur"
+        >
           <UserForm
             user={selectedUser}
             roles={roles}
@@ -88,53 +96,62 @@ export default function AdminPage() {
       )}
 
       {/* Modale Supprimer */}
-      {isDeleteModalOpen && (
-        <Modal title="Supprimer l'utilisateur" onClose={() => setIsDeleteModalOpen(false)}>
-          <p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
-          <div className="flex justify-end gap-2 mt-4">
-            <button className="btn btn-sm btn-ghost" onClick={() => setIsDeleteModalOpen(false)}>
-              Annuler
-            </button>
-            <button className="btn btn-sm btn-error" onClick={() => deleteUser(selectedUser, () => setIsDeleteModalOpen(false))}>
-              Supprimer
-            </button>
-          </div>
-        </Modal>
-      )}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={() => deleteUser(selectedUser, () => setIsDeleteModalOpen(false))}
+        title="Supprimer l'utilisateur"
+        message="Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+      />
     </DashboardLayout>
   );
 }
 
-const Modal = ({ title, children, onClose }) => (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-      <h2 className="text-xl font-semibold mb-4">{title}</h2>
-      {children}
+const Modal = ({ isOpen, onClose, title, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-xl font-semibold mb-4">{title}</h2>
+        {children}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const UserForm = ({ user, roles, onSubmit, onChange, onClose }) => (
   <form onSubmit={(e) => { e.preventDefault(); onSubmit(user); }}>
+    <FormInput
+      label="Nom"
+      type="text"
+      value={user.name}
+      onChange={(e) => onChange({ ...user, name: e.target.value })}
+      required
+    />
+    <FormInput
+      label="Email"
+      type="email"
+      value={user.email}
+      onChange={(e) => onChange({ ...user, email: e.target.value })}
+      required
+    />
     <div className="mb-3">
-      <label className="block text-sm font-small mb-1">Nom</label>
-      <input type="text" className="input input-bordered w-full input-sm" value={user.name} onChange={(e) => onChange({ ...user, name: e.target.value })} required />
-    </div>
-    <div className="mb-3">
-      <label className="block text-sm font-small mb-1">Email</label>
-      <input type="email" className="input input-bordered w-full input-sm" value={user.email} onChange={(e) => onChange({ ...user, email: e.target.value })} required />
-    </div>
-    <div className="mb-3">
-      <label className="block text-sm font-small mb-1">Rôle</label>
-      <select className="select select-bordered w-full select-sm" value={user.role} onChange={(e) => onChange({ ...user, role: e.target.value })} required>
+      <label className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
+      <select 
+        className="select select-bordered w-full select-sm" 
+        value={user.role} 
+        onChange={(e) => onChange({ ...user, role: e.target.value })} 
+        required
+      >
         {roles.map((role) => <option key={role.id} value={role.name}>{role.name}</option>)}
       </select>
     </div>
     <div className="flex justify-between mt-6">
-      <button type="button" className="btn btn-sm btn-ghost" onClick={onClose} >
+      <button type="button" className="btn btn-sm btn-ghost" onClick={onClose}>
         Annuler
       </button>
-      <button type="submit" className="btn btn-sm btn-primary" >
+      <button type="submit" className="btn btn-sm btn-primary">
         Valider
       </button>
     </div>
